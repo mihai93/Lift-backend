@@ -12,6 +12,9 @@ class Exercise:
     def set_type(self, type):
         self.type = type
 
+    def set_url(self,url):
+        self.url = url
+
     def set_muscle(self, muscle):
         self.muscle = muscle
 
@@ -23,6 +26,9 @@ class Exercise:
 
     def set_mechanics(self, mechanics):
         self.mechanics = mechanics
+
+    def set_rating(self, rating):
+        self.rating = rating
 
     def set_level(self, level):
         self.level = level

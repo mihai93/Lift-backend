@@ -1,10 +1,11 @@
 import sys
 import os
-clear = lambda: os.system('cls')
+clear = lambda: os.system('clear')
 clear()
 
 import json
 import mechanize
+import string
 from lxml import html
 import requests
 import cookielib
@@ -70,17 +71,28 @@ else:
 
 exercises = [];
 
-for url in urls[:5]:
+url_num = 0
+
+for url in urls:
+    url_num += 1
+    print url_num, "/", len(urls), " url: ", url
     data = {}
     page = browser.open(url)
 
     content = BeautifulSoup(page.read(), "lxml")
     details = content.find(id="exerciseDetails")
+    summary = content.find("span", {"class" : "summary"})
+
+    if summary.findNext('span').string != 'Read':
+        rating = content.find("span", {"class" : "rating"}).string
+    else:
+        rating = "N/A"
     guideContent = content.find("div", {"class" : "guideContent"})
 
     name = details.h1.string.replace("\n","").strip()
 
     newExercise = Exercise(name)
+    newExercise.set_rating(rating)
 
     guide_items = [];
     guide_notes = [];
