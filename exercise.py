@@ -1,10 +1,13 @@
+import itertools
+import resource
+
 class Exercise:
     id = 0 # global exercise id
 
     # bare min init b/c user may add new exercises
     def __init__(self, name):
+        self.id = id(self)
         self.name = name
-        Exercise.id += 1
 
     # def set_rating(self, rating)
     #     self.rating = rating
@@ -14,6 +17,9 @@ class Exercise:
 
     def set_url(self,url):
         self.url = url
+
+    def set_imgurls(self,imgurls):
+        self.imgurls = imgurls
 
     def set_muscle(self, muscle):
         self.muscle = muscle
@@ -38,6 +44,9 @@ class Exercise:
 
     def set_force(self, force):
         self.force = force
+
+    def set_guide_imgurls(self, guide_imgurls):
+        self.guide_imgurls = guide_imgurls
 
     def set_guide_items(self, guide_items):
         self.guide_items = guide_items

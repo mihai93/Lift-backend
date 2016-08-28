@@ -74,33 +74,45 @@ exercises = [];
 url_num = 0
 
 for url in urls:
+    url = url.replace("\n","")
     url_num += 1
     print url_num, "/", len(urls), " url: ", url
-    data = {}
+
     page = browser.open(url)
 
     content = BeautifulSoup(page.read(), "lxml")
+    guideContent = content.find("div", {"class" : "guideContent"})
+
     details = content.find(id="exerciseDetails")
+    name = details.h1.string.replace("\n","").strip()
+    newExercise = Exercise(name)
+    newExercise.set_url(url)
+
     summary = content.find("span", {"class" : "summary"})
 
     if summary.findNext('span').string != 'Read':
         rating = content.find("span", {"class" : "rating"}).string
     else:
         rating = "N/A"
-    guideContent = content.find("div", {"class" : "guideContent"})
 
-    name = details.h1.string.replace("\n","").strip()
-
-    newExercise = Exercise(name)
     newExercise.set_rating(rating)
+
+    exercisePhotos = content.find("div", {"class" : "exercisePhotos"})
+
+    imgurls = [];
+
+    for photo in exercisePhotos.find_all("a"):
+        photo_url = photo.get('href')
+        imgurls.append(photo_url)
+
+    newExercise.set_imgurls(imgurls)
 
     guide_items = [];
     guide_notes = [];
+    guide_imgurls = [];
 
     for guide_item in guideContent.find_all("li"):
         guide_items.append(guide_item.string)
-
-    newExercise.set_guide_items(guide_items)
 
     for guide_note in guideContent.find_all("p"):
         if not guide_note.strong:
@@ -108,9 +120,13 @@ for url in urls:
 
         guide_notes.append(guide_note.string)
 
+    for guide_imgurl in content.find_all("div", {"class" : "guideImage"}):
+        guide_imgurls.append(guide_imgurl.img.get('src'))
+
+    newExercise.set_guide_items(guide_items)
+    newExercise.set_guide_imgurls(guide_imgurls)
     newExercise.set_note_title(note_title)
     newExercise.set_notes(guide_notes)
-
 
     for span in details.find_all("span"):
         key = span.getText().split(':')[0]
@@ -144,7 +160,7 @@ for url in urls:
 
 for exercise in exercises:
     with open('exerciseBible.json','w') as fp:
-        json.dump(exercise.__dict__, fp)
+        json.dump(exercise.__dict__, fp, sort_keys=True)
 
     s = json.dumps(exercise.__dict__, indent=4, sort_keys=True)
     print s
