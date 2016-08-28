@@ -70,7 +70,7 @@ else:
 
 exercises = [];
 
-for url in urls:
+for url in urls[:5]:
     data = {}
     page = browser.open(url)
 
@@ -87,25 +87,18 @@ for url in urls:
 
     for guide_item in guideContent.find_all("li"):
         guide_items.append(guide_item.string)
-        # print guide_item.string
 
     newExercise.set_guide_items(guide_items)
-    # data['guide_items'] = guide_items
 
     for guide_note in guideContent.find_all("p"):
         if not guide_note.strong:
             note_title = guide_note.strong
-            # print note_title
+
         guide_notes.append(guide_note.string)
-        # print guide_note.string
 
     newExercise.set_note_title(note_title)
     newExercise.set_notes(guide_notes)
 
-    # pp.pprint(guide_items);
-    # pp.pprint(guide_notes);
-
-    # data['Exercise Name'] = name
 
     for span in details.find_all("span"):
         key = span.getText().split(':')[0]
@@ -136,3 +129,12 @@ for url in urls:
             newExercise.set_sport(value)
 
     exercises.append(newExercise)
+
+for exercise in exercises:
+    with open('exerciseBible.json','w') as fp:
+        json.dump(exercise.__dict__, fp)
+
+    s = json.dumps(exercise.__dict__, indent=4, sort_keys=True)
+    print s
+    # pp.pprint(s)
+    # pp.pprint(vars(exercise))
