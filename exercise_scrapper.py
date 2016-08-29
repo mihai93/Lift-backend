@@ -65,7 +65,7 @@ if not os.path.isfile("urls.txt"):
 # #############################################################################
 # End file generation
 # #############################################################################
-else:
+else: # if file already exists
     with open("urls.txt") as f:
         urls = f.readlines()
 
@@ -73,7 +73,9 @@ exercises = [];
 
 url_num = 0
 
+# loop urls read
 for url in urls:
+    # progress feedback
     url = url.replace("\n","")
     url_num += 1
     print url_num, "/", len(urls), " url: ", url
@@ -158,11 +160,10 @@ for url in urls:
 
     exercises.append(newExercise)
 
+# json dump and print to console every exercise
 for exercise in exercises:
     with open('exerciseBible.json','w') as fp:
         json.dump(exercise.__dict__, fp, sort_keys=True)
 
     s = json.dumps(exercise.__dict__, indent=4, sort_keys=True)
     print s
-    # pp.pprint(s)
-    # pp.pprint(vars(exercise))
